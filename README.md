@@ -7,3 +7,7 @@ The training code also requires a Weights & Biases account to log the training o
 ```
 $ wandb login
 ```
+To start a training run, run the train.py script in the repo root with:
+```
+$ python3 ./train.py --dataset-config /path/to/dataset/config --model-config /path/to/model/config --name harmonai_train
+```
