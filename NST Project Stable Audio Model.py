@@ -4,7 +4,14 @@ import os
 from einops import rearrange
 from stable_audio_tools import get_pretrained_model
 from stable_audio_tools.inference.generation import generate_diffusion_cond
+from huggingface_hub import login
+from dotenv import load_dotenv
 
+# HUGGINGFACE LOGIN
+load_dotenv()
+login(token=os.getenv("HF_TOKEN"))
+
+# Make sure I'm using GPU lol
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Download model
@@ -18,7 +25,7 @@ model = model.to(device)
 conditioning = [{
     "prompt": "a happy song that sounds like sunshine ",
     "seconds_start": 0,
-    "seconds_total": 30
+    "seconds_total": 5
 }]
 
 # Generate stereo audio
@@ -31,7 +38,8 @@ output = generate_diffusion_cond(
     sigma_min=0.3,
     sigma_max=500,
     sampler_type="dpmpp-3m-sde",
-    device=device
+    device=device,
+    seed=42  # Use a specific seed to avoid the random seed generation issue
 )
 
 # Rearrange audio batch to a single sequence
