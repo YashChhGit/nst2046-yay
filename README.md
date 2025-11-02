@@ -14,7 +14,7 @@ $ python3 ./train.py --dataset-config /path/to/dataset/config --model-config /pa
 
 ## Streamlit for interface
 
-create a .env file in your project director and add
+create a .env file in your project directory and add
 ```
 GEMINI_API_KEY=<your_key>
 ```
