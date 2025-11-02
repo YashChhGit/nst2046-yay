@@ -1,0 +1,6 @@
+streamlit
+fastapi
+langchain
+openai
+langchain-google-genai
+python-dotenv
