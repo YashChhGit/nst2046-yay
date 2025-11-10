@@ -1,6 +1,16 @@
 streamlit
+protobuf==3.20.3
 fastapi
 langchain
 openai
 langchain-google-genai
 python-dotenv
+librosa
+scipy
+numpy
+torch
+torchaudio
+einops
+stable-audio-tools
+huggingface-hub
+torchcodec

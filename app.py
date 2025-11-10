@@ -6,11 +6,12 @@ from tempfile import NamedTemporaryFile
 
 from user_nlp import generate_user_preferences
 from audio_features import extract_audio_features
+from local_model import generate_audio
 
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
 
-st.title("Bomboclatt App")
+st.title("SoundWaves App")
 
 if not GOOGLE_API_KEY:
     st.error("⚠️ API key not found! Please set GOOGLE_API_KEY in your .env file or environment variables.")
@@ -89,7 +90,7 @@ def json_to_structured_prompt(d):
     return " | ".join(parts)
 
 with st.form("my_form"):
-    text = st.text_area("Enter text:", "Mi bomba")
+    text = st.text_area("Enter text:", "")
     uploaded_file = st.file_uploader("Choose a file")
     submitted = st.form_submit_button("Submit")
 
@@ -121,7 +122,33 @@ with st.form("my_form"):
 
                         prompt_output = json_to_structured_prompt(merged)
                         st.text_area("Generated Stable Audio Prompt:", prompt_output)
+                        
+                        # Generate audio from the prompt
+                        if prompt_output:
+                            with st.spinner("Generating audio..."):
+                                try:
+                                    audio_filename = generate_audio(prompt_output)
+                                    st.success(f"Audio generated successfully!")
+                                    # Display audio player
+                                    audio_path = os.path.join("app", "static", audio_filename)
+                                    st.audio(audio_path, format="audio/wav")
+                                except Exception as e:
+                                    st.error(f"Audio generation failed: {e}")
                     except Exception as fe:
                         st.error(f"Audio feature extraction failed: {fe}")
+                else:
+                    # Generate prompt and audio even without uploaded file
+                    prompt_output = json_to_structured_prompt(user_prefs)
+                    if prompt_output:
+                        st.text_area("Generated Stable Audio Prompt:", prompt_output)
+                        with st.spinner("Generating audio..."):
+                            try:
+                                audio_filename = generate_audio(prompt_output)
+                                st.success(f"Audio generated successfully!")
+                                # Display audio player
+                                audio_path = os.path.join("app", "static", audio_filename)
+                                st.audio(audio_path, format="audio/wav")
+                            except Exception as e:
+                                st.error(f"Audio generation failed: {e}")
         else:
             st.warning("Please enter some text.")
