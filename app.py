@@ -76,7 +76,8 @@ def json_to_structured_prompt(d):
         instruments_str = instruments if ',' in instruments else instruments
         parts.append(f"Instruments: {instruments_str}")
 
-    
+    if dynamics: parts.append(f"Dynamics: {dynamics}")
+    if tone: parts.append(f"Tone: {tone}")
     if style: parts.append(f"Styles: {style}")
     if mood: parts.append(f"Moods: {mood}")
 
@@ -89,8 +90,41 @@ def json_to_structured_prompt(d):
 
     return " | ".join(parts)
 
+st.markdown("""
+### 🎵 How to Use the SoundWaves App  
+Describe the **music you want** in natural language. Minimally include the **instrument**, **genre/style**, and optionally upload a **sample audio file** you want to base it on.  
+
+Here's a sample prompt:  
+> “Make something like the input song. Change BPM to 120 and use acoustic guitar instead. It should have a 2000s and pop vibe.”
+""")
+
+with st.expander("📚 Examples of Genres and Styles"):
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**Genres**")
+        st.markdown("""
+        - Rock  
+        - Pop  
+        - Hip Hop  
+        - Indie  
+        - Foley  
+        - RnB  
+        """)
+    with col2:
+        st.markdown("**Styles**")
+        st.markdown("""
+        - Film Instrumental  
+        - 2000s  
+        - 1960s  
+        - Dance  
+        - Video Games  
+        - High Tech  
+        - Sci-Fi  
+        """)
+
 with st.form("my_form"):
-    text = st.text_area("Enter text:", "")
+    text = st.text_area("🎤 Describe your music idea:", " ")
+
     uploaded_file = st.file_uploader("Choose a file")
     submitted = st.form_submit_button("Submit")
 
