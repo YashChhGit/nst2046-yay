@@ -24,7 +24,7 @@ def robust_ibi_frames(beat_frames):
 
 def estimate_time_signature(y, sr, ibi_frames, hop_length=HOP_LENGTH, meter_candidates=METER_CANDIDATES):
     if ibi_frames is None or ibi_frames <= 0:
-        return "Unknown", None, 0.0
+        return None, None, 0.0
     oenv = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop_length).astype(float)
     oenv = (oenv - oenv.mean()) / (oenv.std() + 1e-9)
     acf = librosa.autocorrelate(oenv, max_size=len(oenv))
@@ -54,16 +54,6 @@ def estimate_time_signature(y, sr, ibi_frames, hop_length=HOP_LENGTH, meter_cand
     elif best_r == 8: ts = "8/8"
     else: ts = f"{best_r}/4"
     return ts, best_r, _confidence
-
-def tempo_category(t):
-    t = float(t)
-    if t < 60: return "very slow, ambient, meditative"
-    elif t < 80: return "slow, downtempo, chillout"
-    elif t < 100: return "moderate, laid-back groove"
-    elif t < 120: return "mid-tempo, pop-like or groove-based"
-    elif t < 140: return "upbeat, danceable"
-    elif t < 170: return "fast-paced, energetic"
-    else: return "very fast, high-BPM, intense"
 
 def tone_category(c):
     c = float(c)
@@ -208,7 +198,6 @@ def extract_audio_features(file_path: str):
         "TempoBPM": round(tempo, 1),
         "TimeSignature": ts_str,
         "Key": key,
-        "TempoCategory": tempo_category(tempo),
         "ToneCategory": tone_category(float(np.mean(centroid))),
         "DynamicsCategory": dynamic_category(float(np.mean(rms))),
         "Mood": top_label,
